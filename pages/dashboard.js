@@ -1,62 +1,128 @@
+import { set } from "mongoose";
 import { useSession, getSession } from "next-auth/react";
 import {useState, useEffect} from "react"
+import { themeChange } from 'theme-change';
+
+const fetchHourLogs = async (userId) => {
+    try {
+      const response = await fetch("/api/fetchentry", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+  
+      if (!response.ok) {
+        throw new Error("Request failed with status: " + response.status);
+      }
+      const data = await response.json();
+      console.log(data)
+      return data;
+    } catch (err) {
+      console.log(err);
+      return [];
+    }
+  };
+
+  const fetchAndSetLogs = async (setLogs, setHoursSum) => {
+    try {
+        const response = await fetch("/api/fetchentry", {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error("Request failed with status: " + response.status);
+        }
+
+        const data = await response.json();
+        const sortedData = data
+  .map(item => ({ date: new Date(item.date), hours: item.hours }))
+  .map(item => ({ date: new Date(item.date.getTime() + item.date.getTimezoneOffset() * 60000), hours: item.hours }))
+  .sort((a, b) => a.date.getTime() - b.date.getTime());
+        
+        let totalHours = 0;
+
+        const recentData = sortedData.slice(-7);
+
+        recentData.forEach((entry) => {
+            totalHours += entry.hours;
+        });
+
+        setLogs(recentData);
+        setHoursSum(totalHours);
+    } catch (err) {
+        console.log("Error fetching logs:", err);
+    }
+};
 
 
-const addLog = async (date, hours, session) => {
+const addLog = async (date, hours, setLogs, setHoursSum) => {
     const newLog = {
         date: date,
         hours: hours,
     }
-        try {
-            const response = await fetch("/api/entry", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(newLog),
-            });
-            console.log("added log:", response);
-        } catch (err) {
-            console.log(err);
-        }
-    }
-
-    const fetchHourLogs = async (userId) => {
-        try {
-          const response = await fetch("/api/fetchentry", {
-            method: "GET",
+    try {
+        const response = await fetch("/api/entry", {
+            method: "POST",
             headers: {
-              "Content-Type": "application/json",
+                "Content-Type": "application/json",
             },
-          });
-      
-          if (!response.ok) {
-            throw new Error("Request failed with status: " + response.status);
-          }
-          const data = await response.json();
-          console.log(data)
-          return data;
-        } catch (err) {
-          console.log(err);
-          return [];
-        }
-      };
-      
+            body: JSON.stringify(newLog),
+        });
+        console.log("added log:", response);
+        
+        // After successfully adding the log, fetch and set logs again
+        await fetchAndSetLogs(setLogs, setHoursSum);
 
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+
+      
 export default function Dashboard() {
+
 
     const { data: session, status } = useSession();
     let [date, setDate] = useState([]);
     let [hours, setHours] = useState(0);
     let [logs, setLogs] = useState([]);
-    let sevenDaysHours = 0;
+    let [hoursSum, setHoursSum] = useState(0);
+    const [refresh, setRefresh] = useState(false);
 
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const data = await fetchHourLogs();
-                setLogs(data);
+
+                console.log(data, "data")
+
+                const sortedData = data
+  .map(item => ({ date: new Date(item.date), hours: item.hours }))
+  .map(item => ({ date: new Date(item.date.getTime() + item.date.getTimezoneOffset() * 60000), hours: item.hours }))
+  .sort((a, b) => a.date.getTime() - b.date.getTime());
+
+
+                console.log(sortedData, "sorted data")
+
+                const recentData = sortedData.slice(-7);
+
+                console.log(recentData, "recent data")
+
+                let total = 0
+                
+                recentData.forEach((entry) => {
+                    total += entry.hours
+                })
+                setHoursSum(total)
+
+
+                setLogs(recentData);
             } catch (err) {
                 console.log(err);
             }
@@ -72,8 +138,15 @@ export default function Dashboard() {
         setHours(e.target.value)
     }
 
+    useEffect(() => {
+        themeChange(false);
+      }, []);
 
   return (<>
+
+<button data-toggle-theme="light,dark" data-act-class="ACTIVECLASS"><input type="checkbox" className="toggle toggle-lg" checked /></button>
+
+
     <div className='text-center'>
     <h1 className="text-5xl m-10">Dashboard</h1>
 
@@ -87,7 +160,8 @@ export default function Dashboard() {
                 <input onChange={handleDate} className="rounded-xl" type="date"></input>
                 <input onChange={handleHours} className="rounded-xl" type="number"></input>
                 </div>
-                <button type="button" onClick={() => addLog(date, hours)} className="rounded-xl bg-green-400 text-white p-2 text-xl">Enter Log</button>
+                <button type="button" onClick={() => addLog(date, hours, setLogs, setHoursSum)} className="btn btn-md btn-accent">Enter Log</button>
+
             </form>
         </div>
     </div>
@@ -107,7 +181,7 @@ export default function Dashboard() {
                 )
             })}
 
-            <p>Hours In Last 7 Days: {sevenDaysHours}</p>
+            <p>Hours In Last 7 Days: {hoursSum}</p>
         </div>
     </div>
 
