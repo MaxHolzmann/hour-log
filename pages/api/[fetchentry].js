@@ -10,8 +10,6 @@ export default async function handler(req, res) {
   try {
     await connectMongo(process.env.MONGODB_URI);
     const fetechedEntries = await Entry.find();
-    console.log("Entry Fetch created by");
-    console.log(fetechedEntries)
     res.status(200).json(fetechedEntries);
   } catch (err) {
     console.log(err);

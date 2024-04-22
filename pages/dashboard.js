@@ -2,6 +2,7 @@ import { set } from "mongoose";
 import { useSession, getSession } from "next-auth/react";
 import {useState, useEffect} from "react"
 import { themeChange } from 'theme-change';
+import DatePicker from "@/components/DatePicker";
 
 const fetchHourLogs = async (userId) => {
     try {
@@ -92,7 +93,7 @@ export default function Dashboard() {
     let [hours, setHours] = useState(0);
     let [logs, setLogs] = useState([]);
     let [hoursSum, setHoursSum] = useState(0);
-    const [refresh, setRefresh] = useState(false);
+    let [dateRangeValue, setDateRangeValue] = useState([]);
 
 
     useEffect(() => {
@@ -144,7 +145,7 @@ export default function Dashboard() {
 
   return (<>
 
-<button data-toggle-theme="light,dark" data-act-class="ACTIVECLASS"><input type="checkbox" className="toggle toggle-lg" checked /></button>
+    <button data-toggle-theme="light,dark" data-act-class="ACTIVECLASS"><input type="checkbox" className="toggle toggle-lg" checked readOnly /></button>
 
 
     <div className='text-center'>
@@ -187,6 +188,11 @@ export default function Dashboard() {
 
     </div>
         
+    <div className="flex flex-col justify-center">
+    <DatePicker newValue={dateRangeValue}></DatePicker>
+    <button className='btn glass bg-white'>Export Report</button>
+    </div>
+
     </div>
     </>
   );
