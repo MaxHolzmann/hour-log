@@ -2,7 +2,8 @@ import { set } from "mongoose";
 import { useSession, getSession } from "next-auth/react";
 import {useState, useEffect} from "react"
 import { themeChange } from 'theme-change';
-import DatePicker from "@/components/DatePicker";
+import Datepicker from "react-tailwindcss-datepicker"; 
+
 
 const fetchHourLogs = async (userId) => {
     try {
@@ -83,7 +84,6 @@ const addLog = async (date, hours, setLogs, setHoursSum) => {
     }
 }
 
-
       
 export default function Dashboard() {
 
@@ -94,6 +94,17 @@ export default function Dashboard() {
     let [logs, setLogs] = useState([]);
     let [hoursSum, setHoursSum] = useState(0);
     let [dateRangeValue, setDateRangeValue] = useState([]);
+
+    const [value, setValue] = useState({ 
+        startDate: new Date(), 
+        endDate: new Date()
+        }); 
+        
+        const handleValueChange = (newValue) => {
+        console.log("newValue:", newValue); 
+        setValue(newValue); 
+        } 
+          
 
 
     useEffect(() => {
@@ -129,7 +140,7 @@ export default function Dashboard() {
             }
         };
         fetchData();
-    }, [session]);
+    }, [session, dateRangeValue]);
 
     const handleDate = (e) => {
         setDate(e.target.value)
@@ -189,9 +200,15 @@ export default function Dashboard() {
     </div>
         
     <div className="flex flex-col justify-center">
-    <DatePicker newValue={dateRangeValue}></DatePicker>
+    <Datepicker 
+value={value} 
+onChange={handleValueChange} 
+showShortcuts={true} 
+/> 
     <button className='btn glass bg-white'>Export Report</button>
     </div>
+
+    <div>{dateRangeValue.endDate}</div>
 
     </div>
     </>
