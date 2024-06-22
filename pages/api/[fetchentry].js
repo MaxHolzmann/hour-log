@@ -4,9 +4,23 @@ import { connectMongo } from "../../db/config/index";
 //add auth middleware
 
 export default async function handler(req, res) {
-  const { id, contact_id } = req.query;
-  // Use the `id` parameter in your logic
-  // Example: Retrieve user data based on the `id`
+  
+  const { startDate, endDate } = req.query;
+
+  console.log(startDate, "start date from fetchentry")
+  console.log(endDate, "end date from fetchentry")
+
+  if(startDate && endDate) {
+    try {
+      await connectMongo(process.env.MONGODB_URI);
+      const fetechedEntries = await Entry.find({ date: { $gte: startDate, $lte: endDate } });
+      res.status(200).json(fetechedEntries);
+    } catch (err) {
+      console.log(err);
+      res.status(500).json(err.body);
+    }
+  } else {
+
   try {
     await connectMongo(process.env.MONGODB_URI);
     const fetechedEntries = await Entry.find();
@@ -16,6 +30,8 @@ export default async function handler(req, res) {
     res.status(500).json(err.body);
   }
 }
+}
+
 
 //with auth, currently building without auth
 

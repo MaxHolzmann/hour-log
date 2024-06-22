@@ -26,7 +26,7 @@ const fetchHourLogs = async (userId) => {
     }
   };
 
-  const fetchAndSetLogs = async (setLogs, setHoursSum) => {
+const fetchAndSetLogs = async (setLogs, setHoursSum) => {
     try {
         const response = await fetch("/api/fetchentry", {
             method: "GET",
@@ -101,8 +101,10 @@ export default function Dashboard() {
         }); 
         
         const handleValueChange = (newValue) => {
-        console.log("newValue:", newValue); 
-        setValue(newValue); 
+        setDateRangeValue(newValue); 
+        console.log("new date range value:", dateRangeValue)
+        console.log(dateRangeValue.startDate, "start date")
+        console.log(dateRangeValue.endDate, "end date")
         } 
           
 
@@ -153,6 +155,34 @@ export default function Dashboard() {
     useEffect(() => {
         themeChange(false);
       }, []);
+
+
+      const pullHoursRanged = async (startDate, endDate) => {
+
+        console.log("export clicked")
+        console.log(startDate, endDate, "start and end date")
+
+        try {
+            const response = await fetch("/api/fetchentry/?startDate=" + startDate + "&endDate=" + endDate, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error("Request failed with status: " + response.status);
+            }
+
+            const data = await response.json();
+            console.log(data)
+        }
+            
+            catch (err) {
+                console.log("Error fetching logs:", err);
+            }
+        }
+
 
   return (<>
 
@@ -205,7 +235,7 @@ value={value}
 onChange={handleValueChange} 
 showShortcuts={true} 
 /> 
-    <button className='btn glass bg-white'>Export Report</button>
+    <button onClick={() => pullHoursRanged(dateRangeValue.startDate, dateRangeValue.endDate)} className='btn glass bg-white'>Export Report</button>
     </div>
 
     <div>{dateRangeValue.endDate}</div>
