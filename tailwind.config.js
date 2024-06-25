@@ -4,12 +4,12 @@ module.exports = {
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
-    './node_modules/react-tailwindcss-datepicker/dist/index.esm.js',
+    "./node_modules/react-tailwindcss-datepicker/dist/index.esm.js",
   ],
   theme: {
-      daisyui: {
-        themes: ["light", "dark", "cupcake", "bumblebee"],
-      },
+    daisyui: {
+      themes: ["light", "dark", "cupcake", "bumblebee"],
+    },
   },
-  plugins: [require("@tailwindcss/forms"), require("daisyui")], 
+  plugins: [require("@tailwindcss/forms"), require("daisyui")],
 };
