@@ -1,6 +1,5 @@
-import { set } from "mongoose";
-import { useSession, getSession } from "next-auth/react";
-import { useState, useEffect, useRef, forwardRef } from "react";
+import { useSession } from "next-auth/react";
+import { useState, useEffect, useRef } from "react";
 import { themeChange } from "theme-change";
 import Datepicker from "react-tailwindcss-datepicker";
 import { useReactToPrint } from "react-to-print";
@@ -8,12 +7,12 @@ import ExportPage from "@/components/ExportPage";
 
 /* Ideas: 
 Export as PDF to send to employer
-Delete button on indiviual hour logs in case of mistake
+Delete button on individual hour logs in case of mistake
 Page of ALL hour logs
 Authentication
 */
 
-const fetchHourLogs = async (userId) => {
+const fetchHourLogs = async () => {
   try {
     const response = await fetch("/api/fetchentry", {
       method: "GET",
@@ -95,17 +94,19 @@ const addLog = async (date, hours, setLogs, setHoursSum) => {
 };
 
 export default function Dashboard() {
-  const { data: session, status } = useSession();
-  let [date, setDate] = useState([]);
-  let [hours, setHours] = useState(0);
-  let [logs, setLogs] = useState([]);
-  let [hoursSum, setHoursSum] = useState(0);
-  let [dateRangeValue, setDateRangeValue] = useState([]);
-  let [dateRangeHours, setDateRangeHours] = useState(null);
-  let [value, setValue] = useState({
+  const { data: session } = useSession();
+  const [date, setDate] = useState([]);
+  const [hours, setHours] = useState(0);
+  const [logs, setLogs] = useState([]);
+  const [hoursSum, setHoursSum] = useState(0);
+  const [dateRangeValue, setDateRangeValue] = useState([]);
+  const [dateRangeHours, setDateRangeHours] = useState(null);
+  const [value, setValue] = useState({
     startDate: null,
     endDate: null,
   });
+  const [printDates, setPrintDates] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const componentRef = useRef();
   const handlePrint = useReactToPrint({
@@ -157,6 +158,7 @@ export default function Dashboard() {
   }, []);
 
   const pullHoursRanged = async (startDate, endDate) => {
+    setIsLoading(true);
     try {
       const response = await fetch(
         "/api/fetchentry/?startDate=" + startDate + "&endDate=" + endDate,
@@ -172,12 +174,31 @@ export default function Dashboard() {
         throw new Error("Request failed with status: " + response.status);
       }
       const data = await response.json();
+      console.log(data);
+
+      const dataMap = data.map((entry) => {
+        return {
+          hours: entry.hours,
+          date: entry.date,
+        };
+      });
+      setPrintDates(dataMap);
+
       const rangedHours = data.reduce((acc, entry) => acc + entry.hours, 0);
       setDateRangeHours(rangedHours);
+
+      setIsLoading(false);
     } catch (err) {
       console.log("Error fetching logs:", err);
+      setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (!isLoading && printDates.length > 0) {
+      handlePrint();
+    }
+  }, [isLoading, printDates]);
 
   return (
     <>
@@ -224,7 +245,10 @@ export default function Dashboard() {
               </div>
               {logs.map((entry) => {
                 return (
-                  <div className="bg-slate-500 m-2 rounded-xl grid grid-cols-2 text-white">
+                  <div
+                    key={entry.date}
+                    className="bg-slate-500 m-2 rounded-xl grid grid-cols-2 text-white"
+                  >
                     <p>{new Date(entry.date).toLocaleDateString("en-US")}</p>
                     <p>{entry.hours}</p>
                   </div>
@@ -254,9 +278,8 @@ export default function Dashboard() {
             Export Report
           </button>
           <div className="hidden">
-            <ExportPage ref={componentRef} />
+            <ExportPage ref={componentRef} entries={printDates} />
           </div>
-          <button onClick={handlePrint}>Test Button For Print</button>
         </div>
         <div>{dateRangeHours}</div>
       </div>
