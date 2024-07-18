@@ -1,8 +1,16 @@
 import { set } from "mongoose";
 import { useSession, getSession } from "next-auth/react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, forwardRef } from "react";
 import { themeChange } from "theme-change";
 import Datepicker from "react-tailwindcss-datepicker";
+import { useReactToPrint } from "react-to-print";
+
+/* Ideas: 
+Export as PDF to send to employer
+Delete button on indiviual hour logs in case of mistake
+Page of ALL hour logs
+Authentication
+*/
 
 const fetchHourLogs = async (userId) => {
   try {
@@ -17,7 +25,6 @@ const fetchHourLogs = async (userId) => {
       throw new Error("Request failed with status: " + response.status);
     }
     const data = await response.json();
-    console.log(data);
     return data;
   } catch (err) {
     console.log(err);
@@ -99,6 +106,11 @@ export default function Dashboard() {
     endDate: null,
   });
 
+  const componentRef = useRef();
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+  });
+
   const handleValueChange = (newValue) => {
     setDateRangeValue(newValue);
     setValue(newValue);
@@ -108,9 +120,6 @@ export default function Dashboard() {
     const fetchData = async () => {
       try {
         const data = await fetchHourLogs();
-
-        console.log(data, "data");
-
         const sortedData = data
           .map((item) => ({ date: new Date(item.date), hours: item.hours }))
           .map((item) => ({
@@ -120,20 +129,12 @@ export default function Dashboard() {
             hours: item.hours,
           }))
           .sort((a, b) => a.date.getTime() - b.date.getTime());
-
-        console.log(sortedData, "sorted data");
-
         const recentData = sortedData.slice(-7);
-
-        console.log(recentData, "recent data");
-
         let total = 0;
-
         recentData.forEach((entry) => {
           total += entry.hours;
         });
         setHoursSum(total);
-
         setLogs(recentData);
       } catch (err) {
         console.log(err);
@@ -155,9 +156,6 @@ export default function Dashboard() {
   }, []);
 
   const pullHoursRanged = async (startDate, endDate) => {
-    console.log("export clicked");
-    console.log(startDate, endDate, "start and end date");
-
     try {
       const response = await fetch(
         "/api/fetchentry/?startDate=" + startDate + "&endDate=" + endDate,
@@ -172,9 +170,7 @@ export default function Dashboard() {
       if (!response.ok) {
         throw new Error("Request failed with status: " + response.status);
       }
-
       const data = await response.json();
-      console.log(data);
       const rangedHours = data.reduce((acc, entry) => acc + entry.hours, 0);
       setDateRangeHours(rangedHours);
     } catch (err) {
@@ -256,6 +252,8 @@ export default function Dashboard() {
           >
             Export Report
           </button>
+          <div ref={componentRef}>Test Print</div>
+          <button onClick={handlePrint}>Test Button For Print</button>
         </div>
         <div>{dateRangeHours}</div>
       </div>
