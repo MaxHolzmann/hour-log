@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, forwardRef } from "react";
 import { themeChange } from "theme-change";
 import Datepicker from "react-tailwindcss-datepicker";
 import { useReactToPrint } from "react-to-print";
+import ExportPage from "@/components/ExportPage";
 
 /* Ideas: 
 Export as PDF to send to employer
@@ -252,7 +253,9 @@ export default function Dashboard() {
           >
             Export Report
           </button>
-          <div ref={componentRef}>Test Print</div>
+          <div className="hidden">
+            <ExportPage ref={componentRef} />
+          </div>
           <button onClick={handlePrint}>Test Button For Print</button>
         </div>
         <div>{dateRangeHours}</div>
