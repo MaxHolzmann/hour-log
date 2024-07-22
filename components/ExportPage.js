@@ -5,6 +5,13 @@ const ExportPage = forwardRef((props, ref) => {
 
   const total = entries.reduce((acc, entry) => acc + entry.hours, 0);
 
+  const entered = entries;
+
+  entered.map((entry) => {
+    entry.hours = entry.hours;
+    entry.date = new Date(entry.date).toLocaleDateString("US-EN");
+  });
+
   return (
     <>
       <div
@@ -18,7 +25,7 @@ const ExportPage = forwardRef((props, ref) => {
 
         <div className="flex justify-center place-items-center flex-col">
           {entries &&
-            entries.map((entry, index) => (
+            entered.map((entry, index) => (
               <div className="grid grid-cols-2" key={index}>
                 <p>Hours: {entry.hours}</p>
                 <p>Date: {entry.date}</p>
