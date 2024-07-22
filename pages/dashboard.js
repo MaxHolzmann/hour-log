@@ -262,28 +262,36 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <div className="flex flex-col justify-center gap-5 mx-40">
-          <div className="mx-40">
-            <Datepicker
-              primaryColor={"orange"}
-              value={value}
-              onChange={handleValueChange}
-              showShortcuts={true}
-            />
-          </div>
-          <button
-            onClick={() =>
-              pullHoursRanged(dateRangeValue.startDate, dateRangeValue.endDate)
-            }
-            className="btn glass bg-white"
-          >
-            Export Report
-          </button>
-          <div className="hidden">
-            <ExportPage ref={componentRef} entries={printDates} />
+        <div>
+          <h1 className="text-2xl">Export Hours Report</h1>
+        </div>
+
+        <div className="flex flex-col bg-slate-300 drop-shadow-md p-5 m-5 rounded-xl justify-center items-center xl:mx-40">
+          <div className="flex justify-center gap-5">
+            <div>
+              <Datepicker
+                primaryColor={"orange"}
+                value={value}
+                onChange={handleValueChange}
+                showShortcuts={true}
+              />
+            </div>
+            <button
+              onClick={() =>
+                pullHoursRanged(
+                  dateRangeValue.startDate,
+                  dateRangeValue.endDate
+                )
+              }
+              className="btn glass bg-white"
+            >
+              Export Report
+            </button>
+            <div className="hidden">
+              <ExportPage ref={componentRef} entries={printDates} />
+            </div>
           </div>
         </div>
-        <div>{dateRangeHours}</div>
       </div>
     </>
   );
