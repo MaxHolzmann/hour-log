@@ -206,20 +206,22 @@ export default function Dashboard() {
         <input type="checkbox" className="toggle toggle-lg" checked readOnly />
       </button>
 
-      <div className="text-center">
+      <div className="grid grid-cols-1 text-center m-5">
         <h1 className="text-5xl m-10">Dashboard</h1>
 
-        <div className="grid grid-cols-2">
-          <div className="text-center">
+        <div className="flex flex-row justify-center items-stretch gap-10">
+          <div className="flex flex-col justify-center items-center flex-1">
             <h2 className="text-2xl">Enter Hours</h2>
-            <div className="rounded-xl bg-slate-300 drop-shadow-md p-5 m-10">
+            <div className="flex-grow rounded-xl bg-slate-300 drop-shadow-md p-5 m-10 w-full">
               <form>
-                <div className="flex justify-center gap-4 p-2">
+                <div className="flex flex-col  gap-4 p-2">
+                  <label>Date</label>
                   <input
                     onChange={handleDate}
                     className="rounded-xl"
                     type="date"
                   ></input>
+                  <label>Hours Worked</label>
                   <input
                     onChange={handleHours}
                     className="rounded-xl"
@@ -229,16 +231,17 @@ export default function Dashboard() {
                 <button
                   type="button"
                   onClick={() => addLog(date, hours, setLogs, setHoursSum)}
-                  className="btn btn-md btn-accent"
+                  className="btn btn-md btn-accent mt-10 w-4/5"
                 >
                   Enter Log
                 </button>
               </form>
             </div>
           </div>
-          <div>
+
+          <div className="flex flex-col justify-center items-center flex-1">
             <h2 className="text-2xl">Hour Log</h2>
-            <div className="bg-slate-300 drop-shadow-md p-5 m-10 rounded-xl">
+            <div className="flex-grow bg-slate-300 drop-shadow-md p-5 m-10 w-full rounded-xl">
               <div className="grid grid-cols-2 text-xl">
                 <p>Date</p>
                 <p>Hours</p>
@@ -254,7 +257,6 @@ export default function Dashboard() {
                   </div>
                 );
               })}
-
               <p>Hours In Last 7 Days: {hoursSum}</p>
             </div>
           </div>
