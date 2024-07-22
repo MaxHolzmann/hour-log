@@ -7,8 +7,11 @@ module.exports = {
     "./node_modules/react-tailwindcss-datepicker/dist/index.esm.js",
   ],
   theme: {
+    fontFamily: {
+      sans: ["Inter", "sans-serif"],
+    },
     daisyui: {
-      themes: ["light", "dark", "cupcake", "bumblebee"],
+      themes: ["light", "dark"],
     },
   },
   plugins: [require("@tailwindcss/forms"), require("daisyui")],

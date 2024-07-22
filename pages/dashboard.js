@@ -209,7 +209,7 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 text-center m-5">
         <h1 className="text-5xl m-10">Dashboard</h1>
 
-        <div className="flex flex-row justify-center items-stretch gap-10">
+        <div className="md:grid grid-cols-1 lg:flex flex-row justify-center gap-10">
           <div className="flex flex-col justify-center items-center flex-1">
             <h2 className="text-2xl">Enter Hours</h2>
             <div className="flex-grow rounded-xl bg-slate-300 drop-shadow-md p-5 m-10 w-full">
@@ -231,7 +231,7 @@ export default function Dashboard() {
                 <button
                   type="button"
                   onClick={() => addLog(date, hours, setLogs, setHoursSum)}
-                  className="btn btn-md btn-accent mt-10 w-4/5"
+                  className="btn btn-md btn-accent mt-7 w-1/2"
                 >
                   Enter Log
                 </button>
@@ -266,8 +266,8 @@ export default function Dashboard() {
           <h1 className="text-2xl">Export Hours Report</h1>
         </div>
 
-        <div className="flex flex-col bg-slate-300 drop-shadow-md p-5 m-5 rounded-xl justify-center items-center xl:mx-40">
-          <div className="flex justify-center gap-5">
+        <div className="flex justify-center">
+          <div className="flex justify-center gap-5 bg-slate-300 p-6 rounded-xl shadow-md mt-2">
             <div>
               <Datepicker
                 primaryColor={"orange"}
