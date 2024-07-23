@@ -9,7 +9,9 @@ const ExportPage = forwardRef((props, ref) => {
 
   entered.map((entry) => {
     entry.hours = entry.hours;
-    entry.date = new Date(entry.date).toLocaleDateString("US-EN");
+    entry.date = new Date(entry.date).toLocaleDateString("US-EN", {
+      timeZone: "UTC",
+    });
   });
 
   return (
