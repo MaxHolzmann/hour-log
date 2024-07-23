@@ -1,6 +1,5 @@
 import "../app/globals.css";
 import { Inter } from "next/font/google";
-import { themeChange } from "theme-change";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -10,13 +9,11 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
-  useEffect(() => {
-    themeChange(false);
-  }, []);
-
   return (
-    <html lang="en">
-      <body className={inter.className}>{children}</body>
+    <html data-theme="light" lang="en">
+      <body data-theme="light" className={inter.className}>
+        {children}
+      </body>
     </html>
   );
 }
