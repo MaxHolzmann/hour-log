@@ -11,7 +11,7 @@ module.exports = {
       sans: ["Inter", "sans-serif"],
     },
     daisyui: {
-      themes: ["light", "dark"],
+      themes: ["light", "cupcake"],
     },
   },
   plugins: [require("@tailwindcss/forms"), require("daisyui")],

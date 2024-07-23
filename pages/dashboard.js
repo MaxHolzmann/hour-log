@@ -1,4 +1,4 @@
-import { useSession } from "next-auth/react";
+import { useSession, signIn, signOut } from "next-auth/react";
 import { useState, useEffect, useRef } from "react";
 import { themeChange } from "theme-change";
 import Datepicker from "react-tailwindcss-datepicker";
@@ -6,15 +6,14 @@ import { useReactToPrint } from "react-to-print";
 import ExportPage from "@/components/ExportPage";
 
 /* Ideas: 
-Export as PDF to send to employer
 Delete button on individual hour logs in case of mistake
-Page of ALL hour logs
+Page of ALL hour logs, Page of RANGED logs for
 Authentication
 */
 
-const fetchHourLogs = async () => {
+const fetchHourLogs = async (session) => {
   try {
-    const response = await fetch("/api/fetchentry", {
+    const response = await fetch("/api/fetchentry?id=" + session.user.id, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -32,9 +31,9 @@ const fetchHourLogs = async () => {
   }
 };
 
-const fetchAndSetLogs = async (setLogs, setHoursSum) => {
+const fetchAndSetLogs = async (setLogs, setHoursSum, session) => {
   try {
-    const response = await fetch("/api/fetchentry", {
+    const response = await fetch("/api/fetchentry?id=" + session, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -71,10 +70,11 @@ const fetchAndSetLogs = async (setLogs, setHoursSum) => {
   }
 };
 
-const addLog = async (date, hours, setLogs, setHoursSum) => {
+const addLog = async (date, hours, user, setLogs, setHoursSum) => {
   const newLog = {
     date: date,
     hours: hours,
+    user: user,
   };
   try {
     const response = await fetch("/api/entry", {
@@ -84,10 +84,7 @@ const addLog = async (date, hours, setLogs, setHoursSum) => {
       },
       body: JSON.stringify(newLog),
     });
-    console.log("added log:", response);
-
-    // After successfully adding the log, fetch and set logs again
-    await fetchAndSetLogs(setLogs, setHoursSum);
+    await fetchAndSetLogs(setLogs, setHoursSum, user);
   } catch (err) {
     console.log(err);
   }
@@ -121,7 +118,8 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await fetchHourLogs();
+        console.log("USE EFFECT SESS", session);
+        const data = await fetchHourLogs(session);
         const sortedData = data
           .map((item) => ({ date: new Date(item.date), hours: item.hours }))
           .map((item) => ({
@@ -157,11 +155,16 @@ export default function Dashboard() {
     themeChange(false);
   }, []);
 
-  const pullHoursRanged = async (startDate, endDate) => {
+  const pullHoursRanged = async (startDate, endDate, session) => {
     setIsLoading(true);
     try {
       const response = await fetch(
-        "/api/fetchentry/?startDate=" + startDate + "&endDate=" + endDate,
+        "/api/fetchentry/?startDate=" +
+          startDate +
+          "&endDate=" +
+          endDate +
+          "&id=" +
+          session,
         {
           method: "GET",
           headers: {
@@ -200,12 +203,17 @@ export default function Dashboard() {
     }
   }, [isLoading, printDates]);
 
+  if (!session) {
+    return (
+      <>
+        <h1>Not Logged in!</h1>
+        <button onClick={() => signIn()}>Sign in</button>
+      </>
+    );
+  }
+
   return (
     <>
-      <button data-toggle-theme="light,dark" data-act-class="ACTIVECLASS">
-        <input type="checkbox" className="toggle toggle-lg" checked readOnly />
-      </button>
-
       <div className="grid grid-cols-1 text-center m-5">
         <h1 className="text-5xl m-10">Dashboard</h1>
 
@@ -230,7 +238,9 @@ export default function Dashboard() {
                 </div>
                 <button
                   type="button"
-                  onClick={() => addLog(date, hours, setLogs, setHoursSum)}
+                  onClick={() =>
+                    addLog(date, hours, session.user.id, setLogs, setHoursSum)
+                  }
                   className="btn btn-md btn-accent mt-7 w-1/2"
                 >
                   Enter Log
@@ -280,7 +290,8 @@ export default function Dashboard() {
               onClick={() =>
                 pullHoursRanged(
                   dateRangeValue.startDate,
-                  dateRangeValue.endDate
+                  dateRangeValue.endDate,
+                  session.user.id
                 )
               }
               className="btn glass bg-white"
