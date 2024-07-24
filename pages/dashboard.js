@@ -4,6 +4,7 @@ import { themeChange } from "theme-change";
 import Datepicker from "react-tailwindcss-datepicker";
 import { useReactToPrint } from "react-to-print";
 import ExportPage from "@/components/ExportPage";
+import NavBar from "@/components/NavBar";
 
 /* Ideas: 
 Delete button on individual hour logs in case of mistake
@@ -214,6 +215,7 @@ export default function Dashboard() {
 
   return (
     <>
+      <NavBar></NavBar>
       <div className="grid grid-cols-1 text-center m-5">
         <h1 className="text-5xl m-10">Dashboard</h1>
 
