@@ -9,7 +9,7 @@ import NavBar from "@/components/NavBar";
 /* Ideas: 
 Delete button on individual hour logs in case of mistake
 Page of ALL hour logs, Page of RANGED logs for
-Authentication
+Email / password auth
 */
 
 const fetchHourLogs = async (session) => {
@@ -207,8 +207,15 @@ export default function Dashboard() {
   if (!session) {
     return (
       <>
-        <h1>Not Logged in!</h1>
-        <button onClick={() => signIn()}>Sign in</button>
+        <div className="flex flex-col justify-center items-center w-screen h-screen gap-10">
+          <h1 className="text-7xl">Not Logged in!</h1>
+          <button
+            className="bg-red-500 text-white hover:text-red-500 hover:bg-white hover:border-red-500 border-2 border-red-500 rounded-md p-2"
+            onClick={() => signIn()}
+          >
+            Sign in with Google
+          </button>
+        </div>
       </>
     );
   }
@@ -217,7 +224,7 @@ export default function Dashboard() {
     <>
       <NavBar></NavBar>
       <div className="grid grid-cols-1 text-center m-5">
-        <h1 className="text-5xl m-10">Dashboard</h1>
+        <h1 className="text-7xl m-10">Dashboard</h1>
 
         <div className="md:grid grid-cols-1 lg:flex flex-row justify-center gap-10">
           <div className="flex flex-col justify-center items-center flex-1">

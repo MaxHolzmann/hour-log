@@ -10,6 +10,17 @@ const NavBar = () => {
           Home
         </a>
       </div>
+      <div className="">
+        <a className="text-xl text-white font-bold" href="/dashboard">
+          Dashboard
+        </a>
+      </div>
+      <div className="">
+        <a className="text-xl text-white font-bold" href="/all">
+          View All
+        </a>
+      </div>
+
       <div>
         {session ? (
           <button onClick={() => signOut()} className="text-white">
