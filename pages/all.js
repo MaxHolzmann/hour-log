@@ -1,12 +1,7 @@
 import { useSession, signIn, signOut } from "next-auth/react";
 import { useState, useEffect, useRef } from "react";
-import { themeChange } from "theme-change";
-import Datepicker from "react-tailwindcss-datepicker";
-import { useReactToPrint } from "react-to-print";
-import ExportPage from "@/components/ExportPage";
+import Datepicker from "react-tailwindcss-datepicker"; //leaving this as I want to implement the datepicker on this page as well
 import NavBar from "@/components/NavBar";
-
-//copy pasted dashboard, working with functions temporarily before I make them components
 
 const fetchHourLogs = async (session) => {
   try {
@@ -28,62 +23,31 @@ const fetchHourLogs = async (session) => {
   }
 };
 
-const fetchAndSetLogs = async (setLogs, setHoursSum, session) => {
-  try {
-    const response = await fetch("/api/fetchentry?id=" + session, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error("Request failed with status: " + response.status);
-    }
-
-    const data = await response.json();
-    const sortedData = data
-      .map((item) => ({ date: new Date(item.date), hours: item.hours }))
-      .map((item) => ({
-        date: new Date(
-          item.date.getTime() + item.date.getTimezoneOffset() * 60000
-        ),
-        hours: item.hours,
-      }))
-      .sort((a, b) => a.date.getTime() - b.date.getTime());
-    setLogs(sortedData);
-  } catch (err) {
-    console.log("Error fetching logs:", err);
-  }
-};
-
 export default function All() {
   const { data: session } = useSession();
-  const [date, setDate] = useState([]);
-  const [hours, setHours] = useState(0);
   const [logs, setLogs] = useState([]);
-  const [hoursSum, setHoursSum] = useState(0);
-  const [dateRangeValue, setDateRangeValue] = useState([]);
-  const [dateRangeHours, setDateRangeHours] = useState(null);
-  const [value, setValue] = useState({
-    startDate: null,
-    endDate: null,
-  });
-  const [printDates, setPrintDates] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isDeleting, setDeleting] = useState(false);
 
-  const componentRef = useRef();
-  const handlePrint = useReactToPrint({
-    content: () => componentRef.current,
-  });
+  const delLog = async (id) => {
+    try {
+      const response = await fetch("/api/fetchentry?id=" + id, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
-  const handleValueChange = (newValue) => {
-    setDateRangeValue(newValue);
-    setValue(newValue);
-  };
-
-  const delLog = (id) => {
-    console.log("DELETE LOG HERE", id);
+      if (!response.ok) {
+        throw new Error("Request failed with status: " + response.status);
+      }
+      const data = await response.json();
+      setDeleting(true);
+      console.log("Deleted!", data);
+      return data;
+    } catch (err) {
+      console.log(err);
+      return [];
+    }
   };
 
   useEffect(() => {
@@ -110,15 +74,7 @@ export default function All() {
       }
     };
     fetchData();
-  }, [session, dateRangeValue]);
-
-  const handleDate = (e) => {
-    setDate(e.target.value);
-  };
-
-  const handleHours = (e) => {
-    setHours(e.target.value);
-  };
+  }, [session, isDeleting]);
 
   if (!session) {
     return (

@@ -6,9 +6,9 @@ import { useReactToPrint } from "react-to-print";
 import ExportPage from "@/components/ExportPage";
 import NavBar from "@/components/NavBar";
 
-/* Ideas: 
-Delete button on individual hour logs in case of mistake
-Page of ALL hour logs, Page of RANGED logs for
+/* Ideas for project: 
+Delete button on individual hour logs in case of mistake in log summary
+Page of RANGED logs for more specific management of hours
 Email / password auth
 */
 
@@ -269,7 +269,7 @@ export default function Dashboard() {
                 return (
                   <div
                     key={entry.date}
-                    className="bg-slate-500 m-2 rounded-xl grid grid-cols-2 text-white"
+                    className="bg-slate-500 m-2 rounded-md grid grid-cols-2 text-white"
                   >
                     <p>{new Date(entry.date).toLocaleDateString("en-US")}</p>
                     <p>{entry.hours}</p>

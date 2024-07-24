@@ -30,4 +30,16 @@ export default async function handler(req, res) {
       res.status(500).json(err.body);
     }
   }
+
+  if (req.method === "DELETE") {
+    try {
+      await connectMongo(process.env.MONGODB_URI);
+      const deletedEntry = await Entry.findByIdAndDelete(req.query.id);
+      console.log(deletedEntry);
+      res.status(200).json(deletedEntry);
+    } catch (err) {
+      console.log(err);
+      res.status(500).json(err.body);
+    }
+  }
 }

@@ -17,7 +17,7 @@ const NavBar = () => {
       </div>
       <div className="">
         <a className="text-xl text-white font-bold" href="/all">
-          View All
+          Manage
         </a>
       </div>
 
