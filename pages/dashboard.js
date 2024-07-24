@@ -8,6 +8,7 @@ import NavBar from "@/components/NavBar";
 
 /* Ideas for project: 
 Delete button on individual hour logs in case of mistake in log summary
+Make components out of functions that are reused between Dashboard & All
 Page of RANGED logs for more specific management of hours
 Email / password auth
 */
