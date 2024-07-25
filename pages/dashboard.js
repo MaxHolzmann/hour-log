@@ -5,6 +5,7 @@ import Datepicker from "react-tailwindcss-datepicker";
 import { useReactToPrint } from "react-to-print";
 import ExportPage from "@/components/ExportPage";
 import NavBar from "@/components/NavBar";
+import NotLoggedIn from "@/components/NotLoggedIn";
 
 /* Ideas for project: 
 Delete button on individual hour logs in case of mistake in log summary
@@ -208,15 +209,7 @@ export default function Dashboard() {
   if (!session) {
     return (
       <>
-        <div className="flex flex-col justify-center items-center w-screen h-screen gap-10">
-          <h1 className="text-7xl">Not Logged in!</h1>
-          <button
-            className="bg-red-500 text-white hover:text-red-500 hover:bg-white hover:border-red-500 border-2 border-red-500 rounded-md p-2"
-            onClick={() => signIn()}
-          >
-            Sign in with Google
-          </button>
-        </div>
+        <NotLoggedIn></NotLoggedIn>
       </>
     );
   }

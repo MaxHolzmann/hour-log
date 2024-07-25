@@ -2,6 +2,7 @@ import { useSession, signIn, signOut } from "next-auth/react";
 import { useState, useEffect, useRef } from "react";
 import Datepicker from "react-tailwindcss-datepicker"; //leaving this as I want to implement the datepicker on this page as well
 import NavBar from "@/components/NavBar";
+import NotLoggedIn from "@/components/NotLoggedIn";
 
 const fetchHourLogs = async (session) => {
   try {
@@ -79,15 +80,7 @@ export default function All() {
   if (!session) {
     return (
       <>
-        <div className="flex flex-col justify-center items-center w-screen h-screen gap-10">
-          <h1 className="text-7xl">Not Logged in!</h1>
-          <button
-            className="bg-red-500 text-white hover:text-red-500 hover:bg-white hover:border-red-500 border-2 border-red-500 rounded-md p-2"
-            onClick={() => signIn()}
-          >
-            Sign in with Google
-          </button>
-        </div>
+        <NotLoggedIn></NotLoggedIn>
       </>
     );
   }
