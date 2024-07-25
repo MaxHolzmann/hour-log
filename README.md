@@ -1,17 +1,12 @@
-# NextJS-Mongo-Tailwind-AuthJS-JS-starter
-A beginning file structure for projects being built on NextJS, MongoDB, AuthJS and TailwindCSS in JavaScript rather than TypeScript.
+# Hour Log
 
-# Getting Started
+Hour Log is a fullstack web application that utilizies React, TailwindCSS, Next.JS, NextAuth, MongoDB & DaisyUI.
 
-To get started, clone, fork or download this repository into your own. 
+Hour Log came to me as an idea when I held a position that required me to track my own hours. My mind naturally wanted to code a solution, and thus Hour Log was born! I've found it incredibly useful to reduce the mental math, as I utilized an "export" feature that allows you to pick through a range of dates and export a PDF report to send to your employer. 
 
-Then, create a .env.local file on the root level with the following variables:
-- MONGODB_URI
-- NODE_ENV
-- NEXTAUTH_URL
-- DB_NAME
-- JWT_SECRET
+# Deployment
+You can view a deployed version of this project [here](https://hour-log-gamma.vercel.app/)
 
-This example has the Google login already configured, if you wish to utilize it also add the following variables to your .env:
-- GOOGLE_CLIENT_ID
-- GOOGLE_CLIENT_SECRET
+# Screenshot
+<img width="1799" alt="hourlog" src="https://github.com/user-attachments/assets/042f3d93-5b8c-4806-b14d-a274a3256a95">
+
