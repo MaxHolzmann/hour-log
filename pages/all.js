@@ -75,6 +75,7 @@ export default function All() {
       }
     };
     fetchData();
+    setDeleting(false);
   }, [session, isDeleting]);
 
   if (!session) {
