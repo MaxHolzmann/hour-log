@@ -40,11 +40,8 @@ export default function Login() {
               placeholder="Password"
               className="mb-4 rounded "
             />
-            <button
-              className="bg-red-500 text-white hover:text-red-500 hover:bg-white hover:border-red-500 border-2 border-red-500 rounded-md p-2"
-              onClick={() => signIn()}
-            >
-              Sign in with Google
+            <button className="bg-red-500 text-white hover:text-red-500 hover:bg-white hover:border-red-500 border-2 border-red-500 rounded-md p-2">
+              <a href="/api/auth/signin">Sign in with Google</a>
             </button>
           </form>
         </div>
