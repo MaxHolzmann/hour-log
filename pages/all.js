@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import Datepicker from "react-tailwindcss-datepicker"; //leaving this as I want to implement the datepicker on this page as well
 import NavBar from "@/components/NavBar";
 import NotLoggedIn from "@/components/NotLoggedIn";
+import Loading from "@/components/Loading";
 
 const fetchHourLogs = async (session) => {
   try {
