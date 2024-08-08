@@ -6,6 +6,7 @@ import { useReactToPrint } from "react-to-print";
 import ExportPage from "@/components/ExportPage";
 import NavBar from "@/components/NavBar";
 import NotLoggedIn from "@/components/NotLoggedIn";
+import Loading from "@/components/Loading";
 
 /* Ideas for project: 
 Delete button on individual hour logs in case of mistake in log summary
@@ -206,7 +207,11 @@ export default function Dashboard() {
     }
   }, [isLoading, printDates]);
 
-  if (!session) {
+  if (session.status === "loading") {
+    return <Loading></Loading>;
+  }
+
+  if (session.status === "unauthenticated") {
     return (
       <>
         <NotLoggedIn></NotLoggedIn>

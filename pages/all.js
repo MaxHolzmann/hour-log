@@ -78,7 +78,11 @@ export default function All() {
     setDeleting(false);
   }, [session, isDeleting]);
 
-  if (!session) {
+  if (session.status === "loading") {
+    return <Loading></Loading>;
+  }
+
+  if (session.status === "unauthenticated") {
     return (
       <>
         <NotLoggedIn></NotLoggedIn>
