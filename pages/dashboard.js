@@ -95,7 +95,7 @@ const addLog = async (date, hours, user, setLogs, setHoursSum) => {
 };
 
 export default function Dashboard() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const [date, setDate] = useState([]);
   const [hours, setHours] = useState(0);
   const [logs, setLogs] = useState([]);
@@ -207,11 +207,11 @@ export default function Dashboard() {
     }
   }, [isLoading, printDates]);
 
-  if (session.status === "loading") {
+  if (status === "loading") {
     return <Loading></Loading>;
   }
 
-  if (session.status === "unauthenticated") {
+  if (status === "unauthenticated") {
     return (
       <>
         <NotLoggedIn></NotLoggedIn>

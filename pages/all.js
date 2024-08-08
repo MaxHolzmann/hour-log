@@ -26,7 +26,7 @@ const fetchHourLogs = async (session) => {
 };
 
 export default function All() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const [logs, setLogs] = useState([]);
   const [isDeleting, setDeleting] = useState(false);
 
@@ -79,11 +79,11 @@ export default function All() {
     setDeleting(false);
   }, [session, isDeleting]);
 
-  if (session.status === "loading") {
+  if (status === "loading") {
     return <Loading></Loading>;
   }
 
-  if (session.status === "unauthenticated") {
+  if (status === "unauthenticated") {
     return (
       <>
         <NotLoggedIn></NotLoggedIn>
